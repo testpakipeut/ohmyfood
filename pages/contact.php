@@ -65,13 +65,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <a href="about.php" class="text-primary font-medium hover:text-secondary transition-colors">À propos</a>
           <a href="restaurants.php" class="text-primary font-medium hover:text-secondary transition-colors">Restaurants</a>
           <a href="reservation.php" class="bg-secondary text-primary font-bold px-5 py-2 rounded-lg shadow hover:bg-primary hover:text-secondary transition-colors duration-200">Réserver</a>
+          <?php if (empty($_SESSION['user_id'])): ?>
+            <a href="login.php" class="ml-4 bg-primary text-white font-bold px-5 py-2 rounded-lg shadow hover:bg-secondary hover:text-primary transition-colors duration-200">Connexion</a>
+            <a href="register.php" class="ml-2 bg-secondary text-primary font-bold px-5 py-2 rounded-lg shadow hover:bg-primary hover:text-secondary transition-colors duration-200">Inscription</a>
+          <?php else: ?>
+            <a href="mes-reservations.php" class="ml-4 bg-secondary text-primary font-bold px-5 py-2 rounded-lg shadow hover:bg-primary hover:text-secondary transition-colors duration-200">Mes réservations</a>
+            <span class="ml-4 text-primary flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A9 9 0 1112 21a9 9 0 01-6.879-3.196z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                Bonjour, <?= htmlspecialchars($_SESSION['user_name']) ?>
+            </span>
+            <a href="logout.php" class="ml-2 bg-primary text-white font-bold px-5 py-2 rounded-lg shadow hover:bg-secondary hover:text-primary transition-colors duration-200">Déconnexion</a>
+          <?php endif; ?>
         </div>
-        <button class="md:hidden text-primary">
+        <button id="mobile-menu-button" class="md:hidden text-primary">
           <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
           </svg>
         </button>
       </nav>
+      <!-- Mobile menu -->
+      <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+        <div class="px-4 py-3 space-y-3">
+          <a href="../index.php" class="block text-primary font-medium hover:text-secondary transition-colors">Accueil</a>
+          <a href="about.php" class="block text-primary font-medium hover:text-secondary transition-colors">À propos</a>
+          <a href="restaurants.php" class="block text-primary font-medium hover:text-secondary transition-colors">Restaurants</a>
+          <a href="reservation.php" class="block bg-secondary text-primary font-bold px-5 py-2 rounded-lg shadow hover:bg-primary hover:text-secondary transition-colors duration-200">Réserver</a>
+          <?php if (empty($_SESSION['user_id'])): ?>
+            <a href="login.php" class="block bg-primary text-white font-bold px-5 py-2 rounded-lg shadow hover:bg-secondary hover:text-primary transition-colors duration-200">Connexion</a>
+            <a href="register.php" class="block bg-secondary text-primary font-bold px-5 py-2 rounded-lg shadow hover:bg-primary hover:text-secondary transition-colors duration-200">Inscription</a>
+          <?php else: ?>
+            <a href="mes-reservations.php" class="block bg-secondary text-primary font-bold px-5 py-2 rounded-lg shadow hover:bg-primary hover:text-secondary transition-colors duration-200">Mes réservations</a>
+            <div class="flex items-center gap-2 text-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A9 9 0 1112 21a9 9 0 01-6.879-3.196z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+              <span>Bonjour, <?= htmlspecialchars($_SESSION['user_name']) ?></span>
+            </div>
+            <a href="logout.php" class="block bg-primary text-white font-bold px-5 py-2 rounded-lg shadow hover:bg-secondary hover:text-primary transition-colors duration-200">Déconnexion</a>
+          <?php endif; ?>
+        </div>
+      </div>
     </header>
     <main class="pt-32 pb-12">
       <section class="max-w-5xl mx-auto px-6">
@@ -128,6 +159,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
       </section>
     </main>
-   
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Fermer le menu mobile quand on clique en dehors
+            document.addEventListener('click', function(event) {
+                if (!mobileMenuButton.contains(event.target) && !mobileMenu.contains(event.target)) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+    </script>
 </body>
 </html> 

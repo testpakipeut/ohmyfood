@@ -65,6 +65,23 @@ session_start();
             }
         }
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Fermer le menu mobile quand on clique en dehors
+            document.addEventListener('click', function(event) {
+                if (!mobileMenuButton.contains(event.target) && !mobileMenu.contains(event.target)) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+    </script>
 </head>
 <body class="bg-light-bg text-dark-text">
     <!-- Header -->
@@ -93,12 +110,32 @@ session_start();
                 <?php endif; ?>
             </div>
             <!-- Mobile menu button -->
-            <button class="md:hidden text-primary">
+            <button id="mobile-menu-button" class="block md:hidden text-primary">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                 </svg>
             </button>
         </nav>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+            <div class="px-4 py-3 space-y-3">
+                <a href="index.php" class="block text-primary font-medium hover:text-secondary transition-colors">Accueil</a>
+                <a href="pages/about.php" class="block text-primary font-medium hover:text-secondary transition-colors">À propos</a>
+                <a href="pages/restaurants.php" class="block text-primary font-medium hover:text-secondary transition-colors">Restaurants</a>
+                <a href="pages/restaurants.php" class="block bg-secondary text-primary font-bold px-5 py-2 rounded-lg shadow hover:bg-primary hover:text-secondary transition-colors duration-200">Réserver</a>
+                <?php if (empty($_SESSION['user_id'])): ?>
+                    <a href="pages/login.php" class="block bg-primary text-white font-bold px-5 py-2 rounded-lg shadow hover:bg-secondary hover:text-primary transition-colors duration-200">Connexion</a>
+                    <a href="pages/register.php" class="block bg-secondary text-primary font-bold px-5 py-2 rounded-lg shadow hover:bg-primary hover:text-secondary transition-colors duration-200">Inscription</a>
+                <?php else: ?>
+                    <a href="pages/mes-reservations.php" class="block bg-secondary text-primary font-bold px-5 py-2 rounded-lg shadow hover:bg-primary hover:text-secondary transition-colors duration-200">Mes réservations</a>
+                    <div class="flex items-center gap-2 text-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A9 9 0 1112 21a9 9 0 01-6.879-3.196z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        <span>Bonjour, <?= htmlspecialchars($_SESSION['user_name']) ?></span>
+                    </div>
+                    <a href="pages/logout.php" class="block bg-primary text-white font-bold px-5 py-2 rounded-lg shadow hover:bg-secondary hover:text-primary transition-colors duration-200">Déconnexion</a>
+                <?php endif; ?>
+            </div>
+        </div>
     </header>
 
     <!-- Hero Section -->
