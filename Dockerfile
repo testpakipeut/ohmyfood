@@ -16,6 +16,9 @@ RUN a2enmod rewrite
 # Copie des fichiers du projet
 COPY . /var/www/html/
 
+# Copie du script d'initialisation de la base de données
+COPY config/init.sql /docker-entrypoint-initdb.d/
+
 # Configuration des permissions
 RUN chown -R www-data:www-data /var/www/html
 
