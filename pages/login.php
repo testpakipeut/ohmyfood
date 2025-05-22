@@ -2,6 +2,13 @@
 session_start();
 require_once '../config/database.php';
 
+// Si l'utilisateur est déjà connecté, rediriger
+if (!empty($_SESSION['user_id'])) {
+    $redirect = $_GET['redirect'] ?? '../index.php';
+    header("Location: $redirect");
+    exit();
+}
+
 $error = '';
 $success = '';
 
@@ -32,13 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = "Aucun compte trouvé avec cet email";
         }
     }
-}
-
-// Si l'utilisateur est déjà connecté, rediriger
-if (!empty($_SESSION['user_id'])) {
-    $redirect = $_GET['redirect'] ?? '../index.php';
-    header("Location: $redirect");
-    exit();
 }
 ?>
 <!DOCTYPE html>
