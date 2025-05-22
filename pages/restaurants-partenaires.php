@@ -1,8 +1,8 @@
 <?php
 require_once '../config/database.php';
 
-// Récupérer tous les détails des restaurants partenaires
-$stmt = $pdo->query("SELECT * FROM restaurants WHERE partenaire = 1 ORDER BY nom ASC");
+// Récupérer tous les détails des restaurants
+$stmt = $pdo->query("SELECT id, nom, description, adresse, telephone, email, image_url FROM restaurants ORDER BY nom ASC");
 $restaurants = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
