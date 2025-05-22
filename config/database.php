@@ -1,22 +1,30 @@
 <?php
 // Paramètres de connexion à la base de données
-define('DB_HOST', getenv('DB_HOST') ?: 'db');
-define('DB_USER', getenv('DB_USER') ?: 'ohmyfood');
-define('DB_PASSWORD', getenv('DB_PASSWORD') ?: 'ohmyfood');
-define('DB_NAME', getenv('DB_NAME') ?: 'ohmyfood');
+$db_host = getenv('RAILWAY_MYSQL_HOST') ?: getenv('MYSQL_HOST') ?: 'localhost';
+$db_user = getenv('RAILWAY_MYSQL_USER') ?: getenv('MYSQL_USER') ?: 'root';
+$db_pass = getenv('RAILWAY_MYSQL_PASSWORD') ?: getenv('MYSQL_PASSWORD') ?: '';
+$db_name = getenv('RAILWAY_MYSQL_DATABASE') ?: getenv('MYSQL_DATABASE') ?: 'ohmyfood';
+
+// Log des paramètres de connexion (sans le mot de passe)
+error_log("Tentative de connexion à la base de données :");
+error_log("Host: " . $db_host);
+error_log("Database: " . $db_name);
+error_log("User: " . $db_user);
 
 try {
     $pdo = new PDO(
-        "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8",
-        DB_USER,
-        DB_PASSWORD,
+        "mysql:host=" . $db_host . ";dbname=" . $db_name . ";charset=utf8",
+        $db_user,
+        $db_pass,
         [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES => false
         ]
     );
+    error_log("Connexion à la base de données réussie !");
 } catch(PDOException $e) {
-    die("Erreur de connexion : " . $e->getMessage());
+    error_log("Erreur de connexion à la base de données : " . $e->getMessage());
+    die("Erreur de connexion à la base de données. Veuillez réessayer plus tard.");
 }
 ?> 
