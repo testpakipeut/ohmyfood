@@ -1,9 +1,9 @@
 <?php
 // Paramètres de connexion à la base de données
-$db_host = 'containers-us-west-207.railway.app';
-$db_port = '7070';
+$db_host = 'interchange.proxy.rlwy.net';
+$db_port = '45400';
 $db_user = 'root';
-$db_pass = 'YOUR_PASSWORD'; // Remplacez par le mot de passe de votre base Railway
+$db_pass = 'CdyQxqClxDFdMGfxvjvyAmlEHnbxZGqW';
 $db_name = 'railway';
 
 // Log des paramètres de connexion (sans le mot de passe)
@@ -26,6 +26,6 @@ try {
     error_log("Connexion à la base de données réussie !");
 } catch(PDOException $e) {
     error_log("Erreur de connexion à la base de données : " . $e->getMessage());
-    die("Erreur de connexion à la base de données. Veuillez réessayer plus tard.");
+    die("Erreur de connexion à la base de données : " . $e->getMessage());
 }
 ?> 
