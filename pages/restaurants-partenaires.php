@@ -1,39 +1,30 @@
 <?php
-session_start();
 require_once '../config/database.php';
-$restaurants = $conn->query("SELECT nom FROM restaurants ORDER BY nom ASC")->fetch_all(MYSQLI_ASSOC);
+
+$stmt = $pdo->query("SELECT nom FROM restaurants ORDER BY nom ASC");
+$restaurants = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurants partenaires - OhMyFood</title>
+    <title>Restaurants Partenaires - OhMyFood</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config = {theme: {extend: {colors: {primary: '#1A1A68',secondary: '#F0C15C','light-bg': '#F5F5F5','dark-text': '#333333','pastel-blue': '#99B8D4'}}}};</script>
-    <style>
-    .marquee {
-        overflow: hidden;
-        white-space: nowrap;
-        box-sizing: border-box;
-        animation: marquee 25s linear infinite;
+    <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#1A1A68',
+            secondary: '#F0C15C',
+            'light-bg': '#F5F5F5',
+            'dark-text': '#333333'
+          }
+        }
+      }
     }
-    @keyframes marquee {
-        0%   { transform: translateX(100%); }
-        100% { transform: translateX(-100%); }
-    }
-    .marquee span {
-        display: inline-block;
-        margin-right: 3rem;
-        padding: 0.5rem 1.5rem;
-        border-radius: 9999px;
-        font-weight: bold;
-        font-size: 1.25rem;
-        color: #fff;
-        background: linear-gradient(90deg, #1A1A68 0%, #99B8D4 100%);
-        box-shadow: 0 2px 8px #1a1a6833;
-    }
-    </style>
+    </script>
 </head>
 <body class="bg-light-bg text-dark-text">
     <header class="bg-white shadow-md fixed w-full top-0 z-50">
@@ -43,27 +34,42 @@ $restaurants = $conn->query("SELECT nom FROM restaurants ORDER BY nom ASC")->fet
             </div>
             <div class="hidden md:flex items-center space-x-8">
                 <a href="../index.php" class="text-primary font-medium hover:text-secondary transition-colors">Accueil</a>
+                <a href="about.php" class="text-primary font-medium hover:text-secondary transition-colors">À propos</a>
                 <a href="restaurants.php" class="text-primary font-medium hover:text-secondary transition-colors">Restaurants</a>
-                <a href="mes-reservations.php" class="bg-secondary text-primary font-bold px-5 py-2 rounded-lg shadow hover:bg-primary hover:text-secondary transition-colors duration-200">Mes réservations</a>
-                <span class="ml-4 text-primary flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A9 9 0 1112 21a9 9 0 01-6.879-3.196z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                    Bonjour, <?= htmlspecialchars($_SESSION['user_name'] ?? '') ?>
-                </span>
-                <a href="logout.php" class="ml-2 bg-primary text-white font-bold px-5 py-2 rounded-lg shadow hover:bg-secondary hover:text-primary transition-colors duration-200">Déconnexion</a>
+                <a href="reservation.php" class="bg-secondary text-primary font-bold px-5 py-2 rounded-lg shadow hover:bg-primary hover:text-secondary transition-colors duration-200">Réserver</a>
+                <?php if (empty($_SESSION['user_id'])): ?>
+                    <a href="login.php" class="ml-4 bg-primary text-white font-bold px-5 py-2 rounded-lg shadow hover:bg-secondary hover:text-primary transition-colors duration-200">Connexion</a>
+                    <a href="register.php" class="ml-2 bg-secondary text-primary font-bold px-5 py-2 rounded-lg shadow hover:bg-primary hover:text-secondary transition-colors duration-200">Inscription</a>
+                <?php else: ?>
+                    <a href="mes-reservations.php" class="ml-4 bg-secondary text-primary font-bold px-5 py-2 rounded-lg shadow hover:bg-primary hover:text-secondary transition-colors duration-200">Mes réservations</a>
+                    <span class="ml-4 text-primary flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A9 9 0 1112 21a9 9 0 01-6.879-3.196z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        Bonjour, <?= htmlspecialchars($_SESSION['user_name']) ?>
+                    </span>
+                    <a href="logout.php" class="ml-2 bg-primary text-white font-bold px-5 py-2 rounded-lg shadow hover:bg-secondary hover:text-primary transition-colors duration-200">Déconnexion</a>
+                <?php endif; ?>
             </div>
         </nav>
     </header>
-    <main class="pt-32 pb-12 max-w-4xl mx-auto px-4">
-        <h1 class="text-3xl font-bold text-primary mb-8 text-center">Restaurants partenaires</h1>
-        <div class="bg-white rounded-xl shadow p-8">
-            <div class="marquee">
-                <?php foreach($restaurants as $r): ?>
-                    <span><?= htmlspecialchars($r['nom']) ?></span>
+
+    <main class="pt-32 pb-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <h1 class="text-3xl font-bold text-primary mb-8 text-center">Nos Restaurants Partenaires</h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <?php foreach($restaurants as $restaurant): ?>
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-xl font-bold text-primary mb-4"><?= htmlspecialchars($restaurant['nom']) ?></h2>
+                    <a href="restaurant.php?nom=<?= urlencode($restaurant['nom']) ?>" 
+                       class="inline-block bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary hover:text-primary transition-colors">
+                        Voir le restaurant
+                    </a>
+                </div>
                 <?php endforeach; ?>
             </div>
         </div>
     </main>
-    <!-- Footer -->
+
     <footer class="bg-primary text-white py-12">
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -74,18 +80,18 @@ $restaurants = $conn->query("SELECT nom FROM restaurants ORDER BY nom ASC")->fet
                 <div>
                     <h4 class="text-lg font-semibold mb-4">Liens utiles</h4>
                     <ul class="space-y-2">
-                        <li><a href="/OHMYFOOD/pages/about.php" class="text-gray-300 hover:text-white">À propos</a></li>
-                        <li><a href="/OHMYFOOD/pages/comment-ca-marche.php" class="text-gray-300 hover:text-white">Comment ça marche</a></li>
-                        <li><a href="/OHMYFOOD/pages/restaurants-partenaires.php" class="text-gray-300 hover:text-white">Restaurants partenaires</a></li>
-                        <li><a href="/OHMYFOOD/pages/contact.php" class="text-gray-300 hover:text-white">Contact</a></li>
+                        <li><a href="about.php" class="text-gray-300 hover:text-white">À propos</a></li>
+                        <li><a href="comment-ca-marche.php" class="text-gray-300 hover:text-white">Comment ça marche</a></li>
+                        <li><a href="restaurants-partenaires.php" class="text-gray-300 hover:text-white">Restaurants partenaires</a></li>
+                        <li><a href="contact.php" class="text-gray-300 hover:text-white">Contact</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 class="text-lg font-semibold mb-4">Légal</h4>
                     <ul class="space-y-2">
-                        <li><a href="/OHMYFOOD/pages/cgu.php" class="text-gray-300 hover:text-white">CGU</a></li>
-                        <li><a href="/OHMYFOOD/pages/politique-confidentialite.php" class="text-gray-300 hover:text-white">Politique de confidentialité</a></li>
-                        <li><a href="/OHMYFOOD/pages/mentions-legales.php" class="text-gray-300 hover:text-white">Mentions légales</a></li>
+                        <li><a href="cgu.php" class="text-gray-300 hover:text-white">CGU</a></li>
+                        <li><a href="politique-confidentialite.php" class="text-gray-300 hover:text-white">Politique de confidentialité</a></li>
+                        <li><a href="mentions-legales.php" class="text-gray-300 hover:text-white">Mentions légales</a></li>
                     </ul>
                 </div>
                 <div>

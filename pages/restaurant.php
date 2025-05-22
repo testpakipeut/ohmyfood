@@ -12,10 +12,9 @@ if (!$restaurant_id) {
 }
 
 // Récupérer les informations du restaurant
-$stmt = $conn->prepare("SELECT * FROM restaurants WHERE id = ?");
-$stmt->bind_param("i", $restaurant_id);
-$stmt->execute();
-$restaurant = $stmt->get_result()->fetch_assoc();
+$stmt = $pdo->prepare("SELECT * FROM restaurants WHERE id = ?");
+$stmt->execute([$restaurant_id]);
+$restaurant = $stmt->fetch();
 
 if (!$restaurant) {
     header('Location: restaurants.php');
@@ -50,15 +49,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reserve'])) {
             $error = "La date de réservation doit être dans le futur";
         } else {
             // Récupérer les informations de l'utilisateur
-            $stmt = $conn->prepare("SELECT nom, email FROM utilisateurs WHERE id = ?");
-            $stmt->bind_param("i", $_SESSION['user_id']);
-            $stmt->execute();
-            $user = $stmt->get_result()->fetch_assoc();
+            $stmt = $pdo->prepare("SELECT nom, email FROM utilisateurs WHERE id = ?");
+            $stmt->execute([$_SESSION['user_id']]);
+            $user = $stmt->fetch();
 
-            $stmt = $conn->prepare("INSERT INTO reservations (restaurant_id, nom, email, telephone, date_reservation, nombre_personnes, message, statut) VALUES (?, ?, ?, ?, ?, ?, ?, 'en_attente')");
-            $stmt->bind_param("issssis", $restaurant_id, $user['nom'], $user['email'], $telephone, $datetime, $guests, $notes);
+            $stmt = $pdo->prepare("INSERT INTO reservations (restaurant_id, nom, email, telephone, date_reservation, nombre_personnes, message, statut) VALUES (?, ?, ?, ?, ?, ?, ?, 'en_attente')");
+            $stmt->execute([$restaurant_id, $user['nom'], $user['email'], $telephone, $datetime, $guests, $notes]);
             
-            if ($stmt->execute()) {
+            if ($stmt->rowCount() > 0) {
                 $success = "Réservation effectuée avec succès !";
             } else {
                 $error = "Erreur lors de la réservation";
@@ -77,15 +75,13 @@ if (isset($_POST['add_review']) && isset($_SESSION['user_id'])) {
         $avis_error = "Merci de donner une note et un commentaire.";
     } else {
         // Optionnel : empêcher plusieurs avis par user/restaurant
-        $stmt_check = $conn->prepare("SELECT id FROM avis WHERE restaurant_id = ? AND prenom = ?");
-        $stmt_check->bind_param("is", $restaurant_id, $prenom);
-        $stmt_check->execute();
-        if ($stmt_check->get_result()->num_rows > 0) {
+        $stmt_check = $pdo->prepare("SELECT id FROM avis WHERE restaurant_id = ? AND prenom = ?");
+        $stmt_check->execute([$restaurant_id, $prenom]);
+        if ($stmt_check->rowCount() > 0) {
             $avis_error = "Vous avez déjà laissé un avis pour ce restaurant.";
         } else {
-            $stmt_add = $conn->prepare("INSERT INTO avis (restaurant_id, prenom, note, commentaire) VALUES (?, ?, ?, ?)");
-            $stmt_add->bind_param("isis", $restaurant_id, $prenom, $note, $commentaire);
-            $stmt_add->execute();
+            $stmt_add = $pdo->prepare("INSERT INTO avis (restaurant_id, prenom, note, commentaire) VALUES (?, ?, ?, ?)");
+            $stmt_add->execute([$restaurant_id, $prenom, $note, $commentaire]);
             header("Location: restaurant.php?id=$restaurant_id");
             exit;
         }
@@ -94,13 +90,9 @@ if (isset($_POST['add_review']) && isset($_SESSION['user_id'])) {
 
 // Récupérer les avis du restaurant
 $avis = [];
-$stmt_avis = $conn->prepare("SELECT prenom, note, commentaire, created_at FROM avis WHERE restaurant_id = ? ORDER BY created_at DESC");
-$stmt_avis->bind_param("i", $restaurant_id);
-$stmt_avis->execute();
-$result_avis = $stmt_avis->get_result();
-while ($row = $result_avis->fetch_assoc()) {
-    $avis[] = $row;
-}
+$stmt_avis = $pdo->prepare("SELECT prenom, note, commentaire, created_at FROM avis WHERE restaurant_id = ? ORDER BY created_at DESC");
+$stmt_avis->execute([$restaurant_id]);
+$avis = $stmt_avis->fetchAll();
 
 // Récupérer le menu du restaurant
 $menu = [
@@ -108,12 +100,11 @@ $menu = [
     'plat' => [],
     'dessert' => []
 ];
-$stmt_menu = $conn->prepare("SELECT type, nom, description, prix FROM menu WHERE restaurant_id = ? ORDER BY type, nom");
-$stmt_menu->bind_param("i", $restaurant_id);
-$stmt_menu->execute();
-$result_menu = $stmt_menu->get_result();
-while ($row = $result_menu->fetch_assoc()) {
-    $menu[$row['type']][] = $row;
+$stmt_menu = $pdo->prepare("SELECT type, nom, description, prix FROM menu WHERE restaurant_id = ? ORDER BY type, nom");
+$stmt_menu->execute([$restaurant_id]);
+$menu_items = $stmt_menu->fetchAll();
+foreach ($menu_items as $item) {
+    $menu[$item['type']][] = $item;
 }
 ?>
 <!DOCTYPE html>

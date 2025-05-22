@@ -27,31 +27,29 @@ $where_clause = !empty($where) ? 'WHERE ' . implode(' AND ', $where) : '';
 // Requête pour le nombre total de restaurants
 $count_sql = "SELECT COUNT(*) as total FROM restaurants $where_clause";
 if (!empty($params)) {
-    $stmt = $conn->prepare($count_sql);
-    $stmt->bind_param($types, ...$params);
-    $stmt->execute();
-    $total = $stmt->get_result()->fetch_assoc()['total'];
+    $stmt = $pdo->prepare($count_sql);
+    $stmt->execute($params);
+    $total = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
 } else {
-    $total = $conn->query($count_sql)->fetch_assoc()['total'];
+    $stmt = $pdo->prepare($count_sql);
+    $stmt->execute();
+    $total = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
 }
 
 $total_pages = ceil($total / $per_page);
 
 // Requête pour les restaurants
 $sql = "SELECT * FROM restaurants $where_clause ORDER BY id DESC LIMIT ? OFFSET ?";
-$stmt = $conn->prepare($sql);
+$stmt = $pdo->prepare($sql);
 
 if (!empty($params)) {
     $params[] = $per_page;
     $params[] = $offset;
-    $types .= 'ii';
-    $stmt->bind_param($types, ...$params);
+    $stmt->execute($params);
 } else {
-    $stmt->bind_param('ii', $per_page, $offset);
+    $stmt->execute();
 }
-
-$stmt->execute();
-$restaurants = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$restaurants = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Debug des données des restaurants
 foreach ($restaurants as $index => $restaurant) {
