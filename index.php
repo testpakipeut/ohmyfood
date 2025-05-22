@@ -125,8 +125,8 @@ session_start();
             <h2 class="text-3xl font-bold mb-12 text-center">Restaurants populaires</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <?php
-                $result = $conn->query("SELECT * FROM restaurants ORDER BY id DESC LIMIT 6");
-                $featured_restaurants = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+                $stmt = $pdo->query("SELECT * FROM restaurants ORDER BY id DESC LIMIT 6");
+                $featured_restaurants = $stmt->fetchAll();
 
                 // Debug des données des restaurants
                 foreach ($featured_restaurants as $index => $restaurant) {
