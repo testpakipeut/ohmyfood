@@ -13,10 +13,9 @@ $success = '';
 $error = '';
 
 // Récupérer les informations de l'utilisateur
-$stmt = $conn->prepare("SELECT name, email, created_at FROM users WHERE id = ?");
-$stmt->bind_param("i", $_SESSION['user_id']);
-$stmt->execute();
-$user = $stmt->get_result()->fetch_assoc();
+$stmt = $pdo->prepare("SELECT name, email, created_at FROM users WHERE id = ?");
+$stmt->execute([$_SESSION['user_id']]);
+$user = $stmt->fetch();
 
 // Traitement du formulaire de mise à jour
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -30,17 +29,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Le nom et l'email sont obligatoires";
     } else {
         // Vérifier si l'email est déjà utilisé par un autre utilisateur
-        $stmt = $conn->prepare("SELECT id FROM users WHERE email = ? AND id != ?");
-        $stmt->bind_param("si", $email, $_SESSION['user_id']);
-        $stmt->execute();
-        if ($stmt->get_result()->num_rows > 0) {
+        $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ? AND id != ?");
+        $stmt->execute([$email, $_SESSION['user_id']]);
+        if ($stmt->rowCount() > 0) {
             $error = "Cet email est déjà utilisé par un autre compte";
         } else {
             // Mettre à jour les informations de base
-            $stmt = $conn->prepare("UPDATE users SET name = ?, email = ? WHERE id = ?");
-            $stmt->bind_param("ssi", $name, $email, $_SESSION['user_id']);
+            $stmt = $pdo->prepare("UPDATE users SET name = ?, email = ? WHERE id = ?");
+            $stmt->execute([$name, $email, $_SESSION['user_id']]);
             
-            if ($stmt->execute()) {
+            if ($stmt->rowCount() > 0) {
                 $_SESSION['user_name'] = $name;
                 $success = "Profil mis à jour avec succès";
                 
@@ -61,22 +59,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = "Le nouveau mot de passe doit contenir au moins 8 caractères";
         } else {
             // Vérifier l'ancien mot de passe
-            $stmt = $conn->prepare("SELECT password FROM users WHERE id = ?");
-            $stmt->bind_param("i", $_SESSION['user_id']);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $user_data = $result->fetch_assoc();
+            $stmt = $pdo->prepare("SELECT password FROM users WHERE id = ?");
+            $stmt->execute([$_SESSION['user_id']]);
+            $result = $stmt->fetch();
             
-            if (password_verify($current_password, $user_data['password'])) {
+            if (password_verify($current_password, $result['password'])) {
                 $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-                $stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
-                $stmt->bind_param("si", $hashed_password, $_SESSION['user_id']);
+                $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
+                $stmt->execute([$hashed_password, $_SESSION['user_id']]);
                 
-                if ($stmt->execute()) {
-                    $success = "Mot de passe mis à jour avec succès";
-                } else {
-                    $error = "Erreur lors de la mise à jour du mot de passe";
-                }
+                $success = "Mot de passe mis à jour avec succès";
             } else {
                 $error = "Mot de passe actuel incorrect";
             }

@@ -7,20 +7,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
 
     $sql = "SELECT * FROM utilisateurs WHERE email = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$email]);
+    $user = $stmt->fetch();
 
-    if ($result->num_rows === 1) {
-        $user = $result->fetch_assoc();
-        if (password_verify($password, $user['mot_de_passe'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_name'] = $user['nom'];
-            $_SESSION['user_role'] = $user['role'];
-            header('Location: ../index.php');
-            exit();
-        }
+    if ($user && password_verify($password, $user['mot_de_passe'])) {
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_name'] = $user['nom'];
+        $_SESSION['user_role'] = $user['role'];
+        header('Location: ../index.php');
+        exit();
     }
     $error = "Email ou mot de passe incorrect";
 }

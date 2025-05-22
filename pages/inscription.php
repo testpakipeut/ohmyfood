@@ -32,20 +32,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Vérifier si l'email existe déjà
-    $stmt = $conn->prepare("SELECT id FROM utilisateurs WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    if ($stmt->get_result()->num_rows > 0) {
+    $stmt = $pdo->prepare("SELECT id FROM utilisateurs WHERE email = ?");
+    $stmt->execute([$email]);
+    if ($stmt->rowCount() > 0) {
         $errors[] = "Cet email est déjà utilisé";
     }
 
     if (empty($errors)) {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         $sql = "INSERT INTO utilisateurs (nom, email, mot_de_passe) VALUES (?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sss", $nom, $email, $hashed_password);
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$nom, $email, $hashed_password]);
 
-        if ($stmt->execute()) {
+        if ($stmt->rowCount() > 0) {
             $_SESSION['success'] = "Inscription réussie ! Vous pouvez maintenant vous connecter.";
             header('Location: connexion.php');
             exit();

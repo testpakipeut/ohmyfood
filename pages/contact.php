@@ -4,7 +4,7 @@ $success = $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Création de la table message si elle n'existe pas
-    $conn->query("CREATE TABLE IF NOT EXISTS message (
+    $pdo->exec("CREATE TABLE IF NOT EXISTS message (
         id INT PRIMARY KEY AUTO_INCREMENT,
         nom VARCHAR(100) NOT NULL,
         email VARCHAR(100) NOT NULL,
@@ -19,9 +19,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $contenu = trim($_POST['message'] ?? '');
 
     if ($nom && $email && $sujet && $contenu) {
-        $stmt = $conn->prepare("INSERT INTO message (nom, email, sujet, contenu) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $nom, $email, $sujet, $contenu);
-        if ($stmt->execute()) {
+        $stmt = $pdo->prepare("INSERT INTO message (nom, email, sujet, contenu) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$nom, $email, $sujet, $contenu]);
+        if ($stmt->rowCount() > 0) {
             $success = "Votre message a bien été envoyé.";
         } else {
             $error = "Erreur lors de l'envoi du message.";

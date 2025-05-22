@@ -3,7 +3,7 @@
 require_once '../config/database.php';
 
 // Création de la table si elle n'existe pas
-$conn->query("CREATE TABLE IF NOT EXISTS restaurants (
+$pdo->exec("CREATE TABLE IF NOT EXISTS restaurants (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     description TEXT,
@@ -13,7 +13,7 @@ $conn->query("CREATE TABLE IF NOT EXISTS restaurants (
 )");
 
 // Création de la table avis si elle n'existe pas
-$conn->query("CREATE TABLE IF NOT EXISTS avis (
+$pdo->exec("CREATE TABLE IF NOT EXISTS avis (
     id INT PRIMARY KEY AUTO_INCREMENT,
     restaurant_id INT NOT NULL,
     prenom VARCHAR(50) NOT NULL,
@@ -32,18 +32,23 @@ $commentaires = [
     "Cuisine raffinée, présentation soignée.",
     "Un vrai régal du début à la fin !"
 ];
-$result = $conn->query("SELECT id FROM restaurants");
-while ($row = $result->fetch_assoc()) {
+
+$stmt = $pdo->query("SELECT id FROM restaurants");
+$restaurants = $stmt->fetchAll();
+
+foreach ($restaurants as $row) {
     $rid = $row['id'];
-    $avis_count = $conn->query("SELECT COUNT(*) as nb FROM avis WHERE restaurant_id = $rid")->fetch_assoc()['nb'];
+    $stmt = $pdo->prepare("SELECT COUNT(*) as nb FROM avis WHERE restaurant_id = ?");
+    $stmt->execute([$rid]);
+    $avis_count = $stmt->fetch()['nb'];
+    
     if ($avis_count < 5) {
         for ($i=0; $i<5; $i++) {
             $prenom = $prenoms[array_rand($prenoms)];
             $note = rand(3,5);
             $commentaire = $commentaires[$i];
-            $stmt = $conn->prepare("INSERT INTO avis (restaurant_id, prenom, note, commentaire) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("isis", $rid, $prenom, $note, $commentaire);
-            $stmt->execute();
+            $stmt = $pdo->prepare("INSERT INTO avis (restaurant_id, prenom, note, commentaire) VALUES (?, ?, ?, ?)");
+            $stmt->execute([$rid, $prenom, $note, $commentaire]);
         }
     }
 }
@@ -57,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_restaurant'])) {
     if (isset($_FILES['image']) && $_FILES['image']['tmp_name']) {
         $image = file_get_contents($_FILES['image']['tmp_name']);
     }
-    $stmt = $conn->prepare("INSERT INTO restaurants (name, description, location, image) VALUES (?, ?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT INTO restaurants (name, description, location, image) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("sssb", $name, $description, $location, $image);
     $stmt->send_long_data(3, $image);
     $stmt->execute();
@@ -66,12 +71,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_restaurant'])) {
 // Suppression d'un restaurant
 if (isset($_GET['delete'])) {
     $id = (int)$_GET['delete'];
-    $conn->query("DELETE FROM restaurants WHERE id = $id");
+    $pdo->exec("DELETE FROM restaurants WHERE id = $id");
 }
 
 // Liste des restaurants
-$result = $conn->query("SELECT id, name, description, location, image FROM restaurants ORDER BY id DESC");
-$restaurants = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+$stmt = $pdo->query("SELECT id, name, description, location, image FROM restaurants ORDER BY id DESC");
+$restaurants = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="fr">

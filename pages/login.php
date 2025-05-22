@@ -12,12 +12,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($email) || empty($password)) {
         $error = "Veuillez remplir tous les champs";
     } else {
-        $stmt = $conn->prepare("SELECT id, nom, email, mot_de_passe, role FROM utilisateurs WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        $stmt = $pdo->prepare("SELECT id, nom, email, mot_de_passe, role FROM utilisateurs WHERE email = ?");
+        $stmt->execute([$email]);
         
-        if ($user = $result->fetch_assoc()) {
+        if ($user = $stmt->fetch()) {
             if (password_verify($password, $user['mot_de_passe'])) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['nom'];

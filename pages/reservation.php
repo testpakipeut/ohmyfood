@@ -11,10 +11,9 @@ if (!isset($_SESSION['user_id'])) {
 $restaurant_id = isset($_GET['restaurant_id']) ? (int)$_GET['restaurant_id'] : 0;
 
 // Récupérer les informations du restaurant
-$stmt = $conn->prepare("SELECT * FROM restaurants WHERE id = ?");
-$stmt->bind_param("i", $restaurant_id);
-$stmt->execute();
-$restaurant = $stmt->get_result()->fetch_assoc();
+$stmt = $pdo->prepare("SELECT * FROM restaurants WHERE id = ?");
+$stmt->execute([$restaurant_id]);
+$restaurant = $stmt->fetch();
 
 if (!$restaurant) {
     header('Location: ../index.php');
@@ -32,8 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sql = "INSERT INTO reservations (restaurant_id, nom, email, telephone, date_reservation, nombre_personnes, message) 
             VALUES (?, ?, ?, ?, ?, ?, ?)";
     
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("issssis", 
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
         $restaurant_id,
         $_SESSION['user_name'],
         $_SESSION['user_email'],
@@ -41,9 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $date_reservation,
         $nombre_personnes,
         $message
-    );
+    ]);
 
-    if ($stmt->execute()) {
+    if ($stmt->rowCount() > 0) {
         $_SESSION['success'] = "Votre réservation a été enregistrée avec succès !";
         header('Location: mes-reservations.php');
         exit();

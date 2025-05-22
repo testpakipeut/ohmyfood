@@ -19,18 +19,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Le mot de passe doit contenir au moins 8 caractères";
     } else {
         // Vérifier si l'email existe déjà
-        $stmt = $conn->prepare("SELECT id FROM utilisateurs WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        if ($stmt->get_result()->num_rows > 0) {
+        $stmt = $pdo->prepare("SELECT id FROM utilisateurs WHERE email = ?");
+        $stmt->execute([$email]);
+        if ($stmt->rowCount() > 0) {
             $error = "Cet email est déjà utilisé";
         } else {
             // Créer le compte
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("INSERT INTO utilisateurs (nom, email, mot_de_passe, role) VALUES (?, ?, ?, 'client')");
-            $stmt->bind_param("sss", $nom, $email, $hashed_password);
+            $stmt = $pdo->prepare("INSERT INTO utilisateurs (nom, email, mot_de_passe, role) VALUES (?, ?, ?, 'client')");
+            $stmt->execute([$nom, $email, $hashed_password]);
             
-            if ($stmt->execute()) {
+            if ($stmt->rowCount() > 0) {
                 $success = "Compte créé avec succès ! Vous pouvez maintenant vous connecter.";
             } else {
                 $error = "Erreur lors de la création du compte";
