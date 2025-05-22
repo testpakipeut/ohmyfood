@@ -1,5 +1,6 @@
 <?php
 require_once '../config/database.php';
+session_start();
 
 // Récupérer tous les détails des restaurants
 $stmt = $pdo->query("SELECT id, nom, description, adresse, telephone, email, image_url FROM restaurants ORDER BY nom ASC");

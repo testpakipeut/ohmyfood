@@ -1,5 +1,6 @@
 <?php
 require_once '../config/database.php';
+session_start();
 $success = $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
