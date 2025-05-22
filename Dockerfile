@@ -16,8 +16,10 @@ RUN a2enmod rewrite
 # Copie des fichiers du projet
 COPY . /var/www/html/
 
-# Configuration des permissions
-RUN chown -R www-data:www-data /var/www/html
+# Vérification des fichiers et permissions
+RUN ls -la /var/www/html/config/ && \
+    chown -R www-data:www-data /var/www/html && \
+    chmod -R 755 /var/www/html
 
 # Exposition du port 80
 EXPOSE 80 
