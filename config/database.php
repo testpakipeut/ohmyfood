@@ -1,6 +1,7 @@
 <?php
 // Paramètres de connexion à la base de données
 $db_host = 'containers-us-west-207.railway.app';
+$db_port = '7070';
 $db_user = 'root';
 $db_pass = 'YOUR_PASSWORD'; // Remplacez par le mot de passe de votre base Railway
 $db_name = 'railway';
@@ -13,7 +14,7 @@ error_log("User: " . $db_user);
 
 try {
     $pdo = new PDO(
-        "mysql:host=" . $db_host . ";dbname=" . $db_name . ";charset=utf8",
+        "mysql:host=" . $db_host . ";port=" . $db_port . ";dbname=" . $db_name . ";charset=utf8",
         $db_user,
         $db_pass,
         [
