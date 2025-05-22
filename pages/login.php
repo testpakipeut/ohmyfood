@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Redirection vers la page précédente ou l'accueil
                 $redirect = $_GET['redirect'] ?? '../index.php';
                 header("Location: $redirect");
-                exit;
+                exit();
             } else {
                 $error = "Mot de passe incorrect";
             }
@@ -32,6 +32,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = "Aucun compte trouvé avec cet email";
         }
     }
+}
+
+// Si l'utilisateur est déjà connecté, rediriger
+if (!empty($_SESSION['user_id'])) {
+    $redirect = $_GET['redirect'] ?? '../index.php';
+    header("Location: $redirect");
+    exit();
 }
 ?>
 <!DOCTYPE html>

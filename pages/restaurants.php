@@ -45,10 +45,10 @@ $stmt = $pdo->prepare($sql);
 if (!empty($params)) {
     $params[] = $per_page;
     $params[] = $offset;
-    $stmt->execute($params);
 } else {
-    $stmt->execute();
+    $params = [$per_page, $offset];
 }
+$stmt->execute($params);
 $restaurants = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Debug des données des restaurants
