@@ -1,0 +1,2 @@
+Règle : Toujours ajouter session_start(); tout en haut de chaque page PHP qui utilise les variables de session (ex : $_SESSION['user_id']). 
+Règle: Toujours faire modification automatiquement en regardant le contexte

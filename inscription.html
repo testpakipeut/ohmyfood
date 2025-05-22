@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inscription – OhMyFood</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#F5F5F5] text-[#333333] font-sans">
+
+  <div class="max-w-md mx-auto py-12 px-6">
+    <h1 class="text-4xl font-bold text-center text-[#1A1A68] mb-8">Créer un compte</h1>
+
+    <div class="bg-white shadow-md rounded-md p-8">
+      <form class="space-y-6">
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Nom complet</label>
+          <input type="text" class="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-[#1A1A68] focus:outline-none" required />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Adresse e-mail</label>
+          <input type="email" class="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-[#1A1A68] focus:outline-none" required />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Mot de passe</label>
+          <input type="password" class="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-[#1A1A68] focus:outline-none" required />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Confirmer le mot de passe</label>
+          <input type="password" class="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-[#1A1A68] focus:outline-none" required />
+        </div>
+
+        <div class="flex items-center">
+          <input type="checkbox" id="terms" class="mr-2" required />
+          <label for="terms" class="text-sm">J'accepte les <a href="#" class="text-[#1A1A68] underline hover:text-[#14144f]">conditions générales</a>.</label>
+        </div>
+
+        <!-- Boutons -->
+        <div class="flex justify-end mt-6">
+          <button type="submit" class="bg-[#1A1A68] text-white px-6 py-2 rounded-md hover:bg-[#14144f] transition duration-200">
+            S'inscrire
+          </button>
+        </div>
+      </form>
+
+      <!-- Lien vers connexion -->
+      <p class="text-center text-sm text-gray-600 mt-6">
+        Vous avez déjà un compte ? <a href="#" class="text-[#1A1A68] underline hover:text-[#14144f]">Se connecter</a>
+      </p>
+    </div>
+  </div>
+
+</body>
+</html>

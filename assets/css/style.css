@@ -1,0 +1,674 @@
+/* Import des polices Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Segoe+UI:wght@400;500;600&display=swap');
+
+/* Variables CSS pour les couleurs */
+:root {
+    --primary-color: #003366; /* Bleu prusse */
+    --secondary-color: #004d99;
+    --accent-color: #ff6b6b;
+    --text-color: #333;
+    --light-gray: #f5f5f5;
+    --white: #ffffff;
+    --shadow: 0 2px 4px rgba(0,0,0,0.1);
+    --bleu-prusse: #1A1A68;
+    --or-pale: #F0C15C;
+    --gris-clair: #F5F5F5;
+    --gris-fonce: #333333;
+    --bleu-pastel: #99B8D4;
+    --blanc: #FFFFFF;
+    --success: #28a745;
+    --error: #dc3545;
+    --warning: #ffc107;
+    --tertiary-color: #99E2D0;
+    --background-color: #f6f6f6;
+    --background-color: #f6f6f6;
+}
+
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100vw;
+    min-width: 100vw;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background: var(--light-gray);
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    color: var(--gris-fonce);
+    line-height: 1.6;
+    padding-top: 56px;
+}
+
+/* Typographie */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+h1 { font-size: 36px; }
+h2 { font-size: 28px; }
+h3 { font-size: 20px; }
+
+p {
+    font-size: 16px;
+    color: var(--gris-fonce);
+    margin-bottom: 1rem;
+}
+
+/* Header modernisé et charte graphique */
+.main-header {
+    background: var(--white);
+    box-shadow: var(--shadow);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    height: 64px;
+    display: flex;
+    align-items: center;
+}
+.main-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 64px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+.logo {
+    display: flex;
+    align-items: center;
+    height: 64px;
+}
+.logo-img {
+    height: 48px;
+    width: auto;
+    object-fit: contain;
+    background: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+}
+.main-nav ul {
+    display: flex;
+    list-style: none;
+    gap: 24px;
+    align-items: center;
+    margin: 0;
+}
+.main-nav a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.08rem;
+    padding: 8px 14px;
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s;
+}
+.main-nav a:hover {
+    background: var(--or-pale);
+    color: var(--white);
+}
+
+/* Bleu prusse et doré pour titres et boutons */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary-color);
+}
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: 1px solid var(--or-pale);
+}
+.btn-primary:hover {
+    background-color: var(--or-pale);
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+}
+
+/* Container responsive */
+.container, .main-header, .main-header .container, .restaurant-grid {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+}
+@media (max-width: 700px) {
+    .container {
+        padding: 0 2px;
+    }
+}
+
+/* Grille restaurant mobile/desktop */
+.restaurant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.2rem;
+}
+@media (max-width: 700px) {
+    .restaurant-grid {
+        grid-template-columns: 1fr;
+        gap: 0.7rem;
+    }
+    .restaurant-card img {
+        height: 110px;
+    }
+    .restaurant-card-content {
+        padding: 0.5rem;
+    }
+}
+
+.restaurant-card {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s;
+    min-width: 0;
+}
+.restaurant-card:hover {
+    transform: translateY(-5px) scale(1.02);
+}
+.restaurant-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    background: #f5f5f5;
+    display: block;
+}
+@media (max-width: 700px) {
+    .restaurant-card img {
+        height: 120px;
+    }
+}
+.restaurant-card-content {
+    padding: 1.2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.restaurant-card h3 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+.restaurant-card p.location {
+    color: var(--secondary-color);
+    font-size: 0.97rem;
+    margin-bottom: 1rem;
+}
+.restaurant-card .btn {
+    margin-top: auto;
+    width: 100%;
+}
+
+/* Supprimer tout fond autour du logo */
+.logo-img, .logo {
+    background: none !important;
+    box-shadow: none !important;
+}
+
+/* Boutons */
+.btn {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    color: var(--white);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+/* Assistant IA */
+.assistant-ia {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--bleu-prusse);
+    color: var(--blanc);
+    padding: 1rem;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.assistant-ia:hover {
+    transform: scale(1.1);
+    background-color: var(--or-pale);
+}
+
+/* Footer modernisé */
+.footer {
+    background: var(--bleu-prusse);
+    color: var(--white);
+    padding: 1.5rem 0 0.7rem 0;
+    margin-top: 2rem;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.footer-section {
+    min-width: 150px;
+    margin-bottom: 0.5rem;
+}
+
+.footer-section h3 {
+    color: var(--white);
+    margin-bottom: 0.3rem;
+    font-size: 1rem;
+}
+
+.footer-section a {
+    color: var(--or-pale);
+    text-decoration: none;
+    display: block;
+    margin-bottom: 0.2rem;
+    font-size: 0.97rem;
+    transition: color 0.2s;
+}
+
+.footer-section a:hover {
+    color: var(--secondary-color);
+}
+
+.social-links {
+    display: flex;
+    gap: 0.7rem;
+    margin-top: 0.3rem;
+}
+
+.social-links a {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.social-links a:hover {
+    background: var(--primary-color);
+}
+
+.copyright {
+    text-align: center;
+    padding-top: 0.7rem;
+    font-size: 0.93rem;
+    color: var(--or-pale);
+}
+
+/* Sections */
+.section {
+    padding: 4rem 0;
+}
+
+/* Messages */
+.message {
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 1rem 0;
+}
+
+.message-success {
+    background-color: var(--success);
+    color: var(--blanc);
+}
+
+.message-error {
+    background-color: var(--error);
+    color: var(--blanc);
+}
+
+.message-warning {
+    background-color: var(--warning);
+    color: var(--gris-fonce);
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .nav {
+        padding: 0 4px;
+        max-width: 98vw;
+    }
+}
+
+@media (max-width: 600px) {
+    .nav-links {
+        gap: 0.5rem;
+        font-size: 0.95rem;
+    }
+    .logo {
+        height: 24px;
+        max-width: 50px;
+    }
+    .footer-section {
+        min-width: 100px;
+    }
+}
+
+/* Accessibilité */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* Focus styles */
+:focus {
+    outline: 3px solid var(--or-pale);
+    outline-offset: 2px;
+}
+
+/* Skip to main content */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--bleu-prusse);
+    color: var(--blanc);
+    padding: 8px;
+    z-index: 100;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Assistant Chat */
+.assistant-chat {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 350px;
+    height: 500px;
+    background-color: var(--blanc);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    display: none;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.assistant-chat.active {
+    display: flex;
+}
+
+.assistant-header {
+    background-color: var(--bleu-prusse);
+    color: var(--blanc);
+    padding: 1rem;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.assistant-header h3 {
+    color: var(--blanc);
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.close-assistant {
+    background: none;
+    border: none;
+    color: var(--blanc);
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.assistant-messages {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.message {
+    max-width: 80%;
+    padding: 0.8rem;
+    border-radius: 10px;
+    line-height: 1.4;
+}
+
+.message.assistant {
+    background-color: var(--gris-clair);
+    align-self: flex-start;
+}
+
+.message.user {
+    background-color: var(--bleu-prusse);
+    color: var(--blanc);
+    align-self: flex-end;
+}
+
+.assistant-input {
+    padding: 1rem;
+    border-top: 1px solid var(--gris-clair);
+    display: flex;
+    gap: 0.5rem;
+}
+
+.assistant-input input {
+    flex: 1;
+    padding: 0.8rem;
+    border: 1px solid var(--gris-clair);
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.assistant-input input:focus {
+    outline: none;
+    border-color: var(--bleu-prusse);
+}
+
+.send-message {
+    background-color: var(--bleu-prusse);
+    color: var(--blanc);
+    border: none;
+    border-radius: 5px;
+    padding: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.send-message:hover {
+    background-color: var(--or-pale);
+}
+
+/* Responsive Design pour l'assistant */
+@media (max-width: 768px) {
+    .assistant-chat {
+        width: 100%;
+        height: 100%;
+        bottom: 0;
+        right: 0;
+        border-radius: 0;
+    }
+
+    .assistant-header {
+        border-radius: 0;
+    }
+}
+
+/* Formulaires */
+.form {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: var(--white);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Messages d'erreur et de succès */
+.error {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+/* Liste des réservations */
+.reservations-list {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.reservation-card {
+    background-color: var(--white);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+
+.reservation-details {
+    margin-top: 1rem;
+}
+
+/* Statuts des réservations */
+.status-en_attente {
+    color: #f57c00;
+}
+
+.status-confirmee {
+    color: #2e7d32;
+}
+
+.status-annulee {
+    color: #c62828;
+}
+
+/* Footer */
+footer {
+    background-color: var(--text-color);
+    color: var(--white);
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .restaurants-grid {
+        grid-template-columns: 1fr;
+    }
+
+    nav {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .form {
+        padding: 1rem;
+    }
+}
+
+.hero, .featured-restaurants {
+    width: 100vw;
+    margin: 0 0 2rem 0;
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+} 

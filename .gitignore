@@ -1,0 +1,32 @@
+# Fichiers de configuration sensibles
+.env
+config/database.php
+
+# Fichiers de base de données
+*.sql
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Fichiers d'IDE
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Fichiers de logs
+*.log
+logs/
+
+# Fichiers temporaires
+*.tmp
+*.temp
+*.swp
+*~
+
+# Dossier vendor (si vous utilisez Composer)
+/vendor/
+
+# Fichiers de cache
+*.cache 

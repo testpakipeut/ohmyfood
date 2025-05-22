@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Avis clients – La Palette du Goût</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#F5F5F5] text-[#333333] font-sans">
+
+  <div class="max-w-5xl mx-auto py-12 px-6">
+    <h1 class="text-4xl font-bold text-center text-[#1A1A68] mb-10">
+      Ce que nos clients disent de <span class="italic">La Palette du Goût</span>
+    </h1>
+
+    <!-- Témoignages -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+      <!-- Avis 1 -->
+      <div class="bg-white p-6 rounded-md shadow-md">
+        <p class="italic mb-4">“Une expérience culinaire exceptionnelle. Les plats sont aussi beaux que délicieux. Le service était irréprochable.”</p>
+        <div class="text-sm text-gray-600">— Claire L., Lyon</div>
+      </div>
+
+      <!-- Avis 2 -->
+      <div class="bg-white p-6 rounded-md shadow-md">
+        <p class="italic mb-4">“Un vrai voyage gustatif ! Mention spéciale au filet de bar aux agrumes… tout simplement divin.”</p>
+        <div class="text-sm text-gray-600">— Marc D., Paris</div>
+      </div>
+
+      <!-- Avis 3 -->
+      <div class="bg-white p-6 rounded-md shadow-md">
+        <p class="italic mb-4">“Un accueil chaleureux, une ambiance raffinée, et des plats inventifs. Une adresse que je recommande les yeux fermés.”</p>
+        <div class="text-sm text-gray-600">— Sophie T., Genève</div>
+      </div>
+
+      <!-- Avis 4 -->
+      <div class="bg-white p-6 rounded-md shadow-md">
+        <p class="italic mb-4">“Chaque bouchée était une explosion de saveurs. Bravo au chef pour cette créativité !”</p>
+        <div class="text-sm text-gray-600">— Youssef M., Marseille</div>
+      </div>
+
+    </div>
+
+    <!-- Bouton laisser un avis -->
+    <div class="text-center mt-12">
+      <a href="#formulaire" class="bg-[#1A1A68] text-white px-6 py-3 rounded-md hover:bg-[#14144f] transition duration-200">
+        Laisser un avis
+      </a>
+    </div>
+
+    <!-- Formulaire d'avis -->
+    <div id="formulaire" class="mt-16 bg-white p-8 rounded-md shadow-md max-w-2xl mx-auto">
+      <h2 class="text-2xl font-semibold text-[#1A1A68] mb-6 text-center">Partagez votre expérience</h2>
+      <form class="space-y-6">
+        <div>
+          <label class="block text-sm font-medium mb-1">Nom</label>
+          <input type="text" class="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-[#1A1A68] focus:outline-none" required />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Votre avis</label>
+          <textarea rows="5" class="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-[#1A1A68] focus:outline-none" required></textarea>
+        </div>
+        <div class="text-right">
+          <button type="submit" class="bg-[#F0C15C] text-[#1A1A68] px-6 py-2 rounded-md hover:bg-[#e4b24b] transition duration-200">
+            Envoyer
+          </button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+</body>
+</html>
