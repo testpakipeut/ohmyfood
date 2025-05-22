@@ -13,14 +13,8 @@ RUN apt-get update && apt-get install -y \
 # Configuration d'Apache
 RUN a2enmod rewrite
 
-# Création du dossier pour le script d'initialisation
-RUN mkdir -p /docker-entrypoint-initdb.d
-
 # Copie des fichiers du projet
 COPY . /var/www/html/
-
-# Copie du script d'initialisation de la base de données
-COPY config/init.sql /docker-entrypoint-initdb.d/
 
 # Configuration des permissions
 RUN chown -R www-data:www-data /var/www/html
