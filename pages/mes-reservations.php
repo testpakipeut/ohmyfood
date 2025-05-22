@@ -1,35 +1,43 @@
 <?php
 session_start();
 require_once '../config/database.php';
+
 if (empty($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
 }
-$user_id = $_SESSION['user_id'];
-$user_name = $_SESSION['user_name'];
 
-// Annulation d'une réservation
-if (isset($_GET['annuler']) && is_numeric($_GET['annuler'])) {
-    $reservation_id = intval($_GET['annuler']);
-    $stmt = $conn->prepare("UPDATE reservations SET statut = 'annulee' WHERE id = ? AND nom = ?");
-    $stmt->bind_param("is", $reservation_id, $user_name);
-    $stmt->execute();
-}
-
-// Récupérer les réservations de l'utilisateur
-$stmt = $conn->prepare("SELECT r.id, r.restaurant_id, r.date_reservation, r.nombre_personnes, r.statut, r.created_at, res.nom AS restaurant_nom FROM reservations r JOIN restaurants res ON r.restaurant_id = res.id WHERE r.nom = ? ORDER BY r.date_reservation DESC");
-$stmt->bind_param("s", $user_name);
-$stmt->execute();
-$reservations = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmt = $pdo->prepare("
+    SELECT r.*, res.date_reservation, res.nombre_personnes, res.status
+    FROM restaurants r
+    JOIN reservations res ON r.id = res.restaurant_id
+    WHERE res.user_id = ?
+    ORDER BY res.date_reservation DESC
+");
+$stmt->execute([$_SESSION['user_id']]);
+$reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
-<html lang='fr'>
+<html lang="fr">
 <head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Mes réservations - OhMyFood</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Réservations - OhMyFood</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config = {theme: {extend: {colors: {primary: '#1A1A68',secondary: '#F0C15C','light-bg': '#F5F5F5','dark-text': '#333333'}}}};</script>
+    <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#1A1A68',
+            secondary: '#F0C15C',
+            'light-bg': '#F5F5F5',
+            'dark-text': '#333333'
+          }
+        }
+      }
+    }
+    </script>
 </head>
 <body class="bg-light-bg text-dark-text">
     <header class="bg-white shadow-md fixed w-full top-0 z-50">
@@ -39,39 +47,70 @@ $reservations = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             </div>
             <div class="hidden md:flex items-center space-x-8">
                 <a href="../index.php" class="text-primary font-medium hover:text-secondary transition-colors">Accueil</a>
+                <a href="about.php" class="text-primary font-medium hover:text-secondary transition-colors">À propos</a>
                 <a href="restaurants.php" class="text-primary font-medium hover:text-secondary transition-colors">Restaurants</a>
-                <a href="mes-reservations.php" class="bg-secondary text-primary font-bold px-5 py-2 rounded-lg shadow hover:bg-primary hover:text-secondary transition-colors duration-200">Mes réservations</a>
-                <span class="ml-4 text-primary flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A9 9 0 1112 21a9 9 0 01-6.879-3.196z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                    Bonjour, <?= htmlspecialchars($user_name) ?>
-                </span>
-                <a href="logout.php" class="ml-2 bg-primary text-white font-bold px-5 py-2 rounded-lg shadow hover:bg-secondary hover:text-primary transition-colors duration-200">Déconnexion</a>
+                <a href="reservation.php" class="bg-secondary text-primary font-bold px-5 py-2 rounded-lg shadow hover:bg-primary hover:text-secondary transition-colors duration-200">Réserver</a>
+                <?php if (empty($_SESSION['user_id'])): ?>
+                    <a href="login.php" class="ml-4 bg-primary text-white font-bold px-5 py-2 rounded-lg shadow hover:bg-secondary hover:text-primary transition-colors duration-200">Connexion</a>
+                    <a href="register.php" class="ml-2 bg-secondary text-primary font-bold px-5 py-2 rounded-lg shadow hover:bg-primary hover:text-secondary transition-colors duration-200">Inscription</a>
+                <?php else: ?>
+                    <a href="mes-reservations.php" class="ml-4 bg-secondary text-primary font-bold px-5 py-2 rounded-lg shadow hover:bg-primary hover:text-secondary transition-colors duration-200">Mes réservations</a>
+                    <span class="ml-4 text-primary flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A9 9 0 1112 21a9 9 0 01-6.879-3.196z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        Bonjour, <?= htmlspecialchars($_SESSION['user_name']) ?>
+                    </span>
+                    <a href="logout.php" class="ml-2 bg-primary text-white font-bold px-5 py-2 rounded-lg shadow hover:bg-secondary hover:text-primary transition-colors duration-200">Déconnexion</a>
+                <?php endif; ?>
             </div>
         </nav>
     </header>
-    <main class="pt-32 pb-12 max-w-3xl mx-auto px-4">
-        <h1 class="text-3xl font-bold text-primary mb-8 text-center">Mes réservations</h1>
-        <?php if (empty($reservations)): ?>
-            <div class="text-center text-gray-500">Aucune réservation trouvée.</div>
-        <?php else: ?>
-            <div class="space-y-6">
-                <?php foreach($reservations as $res): ?>
-                    <div class="bg-white rounded-xl shadow p-6 flex flex-col md:flex-row md:items-center md:justify-between">
-                        <div>
-                            <div class="font-bold text-lg text-primary mb-1"><?= htmlspecialchars($res['restaurant_nom']) ?></div>
-                            <div class="text-gray-600 mb-1">Date : <?= date('d/m/Y H:i', strtotime($res['date_reservation'])) ?></div>
-                            <div class="text-gray-600 mb-1">Personnes : <?= $res['nombre_personnes'] ?></div>
-                            <div class="text-gray-500 text-sm">Statut : <span class="font-semibold <?= $res['statut']==='annulee'?'text-red-600':($res['statut']==='confirmee'?'text-green-600':'text-yellow-600') ?>"><?= ucfirst($res['statut']) ?></span></div>
+
+    <main class="pt-32 pb-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <h1 class="text-3xl font-bold text-primary mb-8 text-center">Mes Réservations</h1>
+            
+            <?php if (empty($reservations)): ?>
+                <div class="bg-white rounded-lg shadow-lg p-8 text-center">
+                    <p class="text-gray-600 mb-4">Vous n'avez pas encore de réservations.</p>
+                    <a href="restaurants.php" class="inline-block bg-primary text-white px-6 py-2 rounded-lg hover:bg-secondary hover:text-primary transition-colors">
+                        Découvrir nos restaurants
+                    </a>
+                </div>
+            <?php else: ?>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <?php foreach($reservations as $reservation): ?>
+                        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                            <div class="p-6">
+                                <h2 class="text-xl font-bold text-primary mb-2"><?= htmlspecialchars($reservation['nom']) ?></h2>
+                                <p class="text-gray-600 mb-4"><?= htmlspecialchars($reservation['description']) ?></p>
+                                <div class="space-y-2">
+                                    <p class="flex items-center text-gray-700">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <?= date('d/m/Y H:i', strtotime($reservation['date_reservation'])) ?>
+                                    </p>
+                                    <p class="flex items-center text-gray-700">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                        </svg>
+                                        <?= $reservation['nombre_personnes'] ?> personne(s)
+                                    </p>
+                                    <p class="flex items-center text-gray-700">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <?= ucfirst($reservation['status']) ?>
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <?php if ($res['statut'] !== 'annulee'): ?>
-                        <a href="?annuler=<?= $res['id'] ?>" class="mt-4 md:mt-0 bg-red-100 text-red-700 font-bold px-4 py-2 rounded-lg shadow hover:bg-red-200 transition-colors" onclick="return confirm('Annuler cette réservation ?');">Annuler</a>
-                        <?php endif; ?>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
     </main>
-    <!-- Footer -->
+
     <footer class="bg-primary text-white py-12">
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -82,18 +121,18 @@ $reservations = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                 <div>
                     <h4 class="text-lg font-semibold mb-4">Liens utiles</h4>
                     <ul class="space-y-2">
-                        <li><a href="/OHMYFOOD/pages/about.php" class="text-gray-300 hover:text-white">À propos</a></li>
-                        <li><a href="/OHMYFOOD/pages/comment-ca-marche.php" class="text-gray-300 hover:text-white">Comment ça marche</a></li>
-                        <li><a href="/OHMYFOOD/pages/restaurants-partenaires.php" class="text-gray-300 hover:text-white">Restaurants partenaires</a></li>
-                        <li><a href="/OHMYFOOD/pages/contact.php" class="text-gray-300 hover:text-white">Contact</a></li>
+                        <li><a href="about.php" class="text-gray-300 hover:text-white">À propos</a></li>
+                        <li><a href="comment-ca-marche.php" class="text-gray-300 hover:text-white">Comment ça marche</a></li>
+                        <li><a href="restaurants-partenaires.php" class="text-gray-300 hover:text-white">Restaurants partenaires</a></li>
+                        <li><a href="contact.php" class="text-gray-300 hover:text-white">Contact</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 class="text-lg font-semibold mb-4">Légal</h4>
                     <ul class="space-y-2">
-                        <li><a href="/OHMYFOOD/pages/cgu.php" class="text-gray-300 hover:text-white">CGU</a></li>
-                        <li><a href="/OHMYFOOD/pages/politique-confidentialite.php" class="text-gray-300 hover:text-white">Politique de confidentialité</a></li>
-                        <li><a href="/OHMYFOOD/pages/mentions-legales.php" class="text-gray-300 hover:text-white">Mentions légales</a></li>
+                        <li><a href="cgu.php" class="text-gray-300 hover:text-white">CGU</a></li>
+                        <li><a href="politique-confidentialite.php" class="text-gray-300 hover:text-white">Politique de confidentialité</a></li>
+                        <li><a href="mentions-legales.php" class="text-gray-300 hover:text-white">Mentions légales</a></li>
                     </ul>
                 </div>
                 <div>
