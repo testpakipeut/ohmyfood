@@ -1,9 +1,9 @@
 <?php
 // Paramètres de connexion à la base de données
-$db_host = getenv('RAILWAY_MYSQL_HOST') ?: getenv('MYSQL_HOST') ?: 'localhost';
-$db_user = getenv('RAILWAY_MYSQL_USER') ?: getenv('MYSQL_USER') ?: 'root';
-$db_pass = getenv('RAILWAY_MYSQL_PASSWORD') ?: getenv('MYSQL_PASSWORD') ?: '';
-$db_name = getenv('RAILWAY_MYSQL_DATABASE') ?: getenv('MYSQL_DATABASE') ?: 'ohmyfood';
+$db_host = 'containers-us-west-207.railway.app';
+$db_user = 'root';
+$db_pass = 'YOUR_PASSWORD'; // Remplacez par le mot de passe de votre base Railway
+$db_name = 'railway';
 
 // Log des paramètres de connexion (sans le mot de passe)
 error_log("Tentative de connexion à la base de données :");
