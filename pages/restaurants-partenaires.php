@@ -1,7 +1,8 @@
 <?php
 require_once '../config/database.php';
 
-$stmt = $pdo->query("SELECT nom FROM restaurants ORDER BY nom ASC");
+// Récupérer tous les détails des restaurants partenaires
+$stmt = $pdo->query("SELECT * FROM restaurants WHERE partenaire = 1 ORDER BY nom ASC");
 $restaurants = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
@@ -56,19 +57,82 @@ $restaurants = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="max-w-7xl mx-auto px-4">
             <h1 class="text-3xl font-bold text-primary mb-8 text-center">Nos Restaurants Partenaires</h1>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <?php foreach($restaurants as $restaurant): ?>
-                <div class="bg-white rounded-lg shadow-lg p-6">
-                    <h2 class="text-xl font-bold text-primary mb-4"><?= htmlspecialchars($restaurant['nom']) ?></h2>
-                    <a href="restaurant.php?nom=<?= urlencode($restaurant['nom']) ?>" 
-                       class="inline-block bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary hover:text-primary transition-colors">
-                        Voir le restaurant
-                    </a>
+            <div class="relative">
+                <button onclick="scrollRestaurants('left')" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-primary text-white p-2 rounded-full shadow-lg z-10">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                
+                <div id="restaurants-container" class="flex overflow-x-auto hide-scrollbar pb-4">
+                    <?php foreach($restaurants as $restaurant): ?>
+                    <div class="flex-none w-80 mr-8">
+                        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                            <?php if (!empty($restaurant['image_url'])): ?>
+                                <img src="<?= htmlspecialchars($restaurant['image_url']) ?>" 
+                                     alt="<?= htmlspecialchars($restaurant['nom']) ?>" 
+                                     class="w-full h-48 object-cover">
+                            <?php else: ?>
+                                <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+                                    <span class="text-gray-500">Aucune image disponible</span>
+                                </div>
+                            <?php endif; ?>
+                            <div class="p-6">
+                                <h2 class="text-xl font-bold text-primary mb-2"><?= htmlspecialchars($restaurant['nom']) ?></h2>
+                                <p class="text-gray-600 mb-4"><?= htmlspecialchars($restaurant['description']) ?></p>
+                                <p class="text-sm text-gray-500 mb-4 flex items-center">
+                                    <svg class="w-4 h-4 mr-1 text-primary inline" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 2C6.13 2 3 5.13 3 9c0 5.25 7 11 7 11s7-5.75 7-11c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 10 6a2.5 2.5 0 0 1 0 5.5z"/>
+                                    </svg>
+                                    <?= htmlspecialchars($restaurant['adresse']) ?>
+                                </p>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center">
+                                        <span class="text-secondary">★★★★★</span>
+                                    </div>
+                                    <a href="restaurant.php?id=<?= $restaurant['id'] ?>" 
+                                       class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors">
+                                        Voir le restaurant
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
                 </div>
-                <?php endforeach; ?>
+
+                <button onclick="scrollRestaurants('right')" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-primary text-white p-2 rounded-full shadow-lg z-10">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </button>
             </div>
         </div>
     </main>
+
+    <style>
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+
+    <script>
+        function scrollRestaurants(direction) {
+            const container = document.getElementById('restaurants-container');
+            const scrollAmount = 320; // Largeur de la carte + gap
+            const currentScroll = container.scrollLeft;
+            
+            if (direction === 'left') {
+                container.scrollLeft = currentScroll - scrollAmount;
+            } else {
+                container.scrollLeft = currentScroll + scrollAmount;
+            }
+        }
+    </script>
 
     <footer class="bg-primary text-white py-12">
         <div class="max-w-7xl mx-auto px-6">
