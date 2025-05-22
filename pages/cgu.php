@@ -59,18 +59,18 @@ session_start();
                 <div>
                     <h4 class="text-lg font-semibold mb-4">Liens utiles</h4>
                     <ul class="space-y-2">
-                        <li><a href="/OHMYFOOD/pages/about.php" class="text-gray-300 hover:text-white">À propos</a></li>
-                        <li><a href="/OHMYFOOD/pages/comment-ca-marche.php" class="text-gray-300 hover:text-white">Comment ça marche</a></li>
-                        <li><a href="/OHMYFOOD/pages/restaurants-partenaires.php" class="text-gray-300 hover:text-white">Restaurants partenaires</a></li>
-                        <li><a href="/OHMYFOOD/pages/contact.php" class="text-gray-300 hover:text-white">Contact</a></li>
+                        <li><a href="about.php" class="text-gray-300 hover:text-white">À propos</a></li>
+                        <li><a href="comment-ca-marche.php" class="text-gray-300 hover:text-white">Comment ça marche</a></li>
+                        <li><a href="restaurants-partenaires.php" class="text-gray-300 hover:text-white">Restaurants partenaires</a></li>
+                        <li><a href="contact.php" class="text-gray-300 hover:text-white">Contact</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 class="text-lg font-semibold mb-4">Légal</h4>
                     <ul class="space-y-2">
-                        <li><a href="/OHMYFOOD/pages/cgu.php" class="text-gray-300 hover:text-white">CGU</a></li>
-                        <li><a href="/OHMYFOOD/pages/politique-confidentialite.php" class="text-gray-300 hover:text-white">Politique de confidentialité</a></li>
-                        <li><a href="/OHMYFOOD/pages/mentions-legales.php" class="text-gray-300 hover:text-white">Mentions légales</a></li>
+                        <li><a href="cgu.php" class="text-gray-300 hover:text-white">CGU</a></li>
+                        <li><a href="politique-confidentialite.php" class="text-gray-300 hover:text-white">Politique de confidentialité</a></li>
+                        <li><a href="mentions-legales.php" class="text-gray-300 hover:text-white">Mentions légales</a></li>
                     </ul>
                 </div>
                 <div>
